@@ -3,8 +3,10 @@ This is an effort to write an easy to use library for performing
 common memory-related operations when writing game hacks.  
 All of the functions are made to be stateless and functional.  
   
-# The Functions
+# The Library
 ```c 
+Use the ProcessAccess for Write/Read Memory functions.
+// -Functions List-
 // Note: Use GetLastError() for more information on failures.
 
 // Checks if the specified process is running. Returns true if it is, false otherwise.
