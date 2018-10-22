@@ -35,6 +35,21 @@ __declspec(dllexport) void mWriteMemory(const HANDLE PROCESS_HANDLE, const LPVOI
 	}
 }
 
-__declspec(dllexport) void mInjectDLL(const HANDLE PROCESS_HANDLE, const std::string *DLL_LOCATION) {
+__declspec(dllexport) void mInjectDLL(const int PROCESS_ID, const std::string *DLL_LOCATION) {
+	size_t dllLen = strlen((DLL_LOCATION->c_str()));
+
+	HANDLE injecteeHandle = OpenProcess(PROCESS_CREATE_THREAD | PROCESS_QUERY_INFORMATION | PROCESS_VM_OPERATION
+										| PROCESS_VM_WRITE | PROCESS_VM_READ, FALSE, PROCESS_ID);
+	LPVOID loadLibrary = (LPVOID)GetProcAddress(GetModuleHandle(L"kernel32.dll"), "LoadLibraryA");
+	LPVOID locationToWrite = (LPVOID)VirtualAllocEx(injecteeHandle, NULL, dllLen, MEM_RESERVE | MEM_COMMIT, PAGE_READWRITE);
+
+	if (injecteeHandle == INVALID_HANDLE_VALUE) {
+		CloseHandle(injecteeHandle);
+		return throw mMemoryOperationException();
+	}
+
+	mWriteMemory(injecteeHandle, locationToWrite, DLL_LOCATION);
+
+	HANDLE remoteThread = CreateRemoteThread(injecteeHandle, NULL, 0, (LPTHREAD_START_ROUTINE)loadLibrary, locationToWrite, 0, NULL);
 
 }
