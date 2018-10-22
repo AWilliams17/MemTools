@@ -8,14 +8,14 @@
 #endif
 
 namespace mProcessFunctions {
-	enum ProcessAccess : DWORD {
+	MEMTOOLS_API enum ProcessAccess : DWORD {
 		Full = PROCESS_ALL_ACCESS,
 		ReadOnly = PROCESS_VM_OPERATION | PROCESS_VM_READ,
 		WriteOnly = PROCESS_VM_OPERATION | PROCESS_VM_WRITE,
 		ReadWrite = ReadOnly | WriteOnly
 	};
 
-	HANDLE mGetHandle(const std::wstring &PROCESSNAME, const ProcessAccess DESIREDACCESS);
-	DWORD mGetPID(const std::wstring &PROCESSNAME);
-	bool mIsHandleValid(const HANDLE &PROCESSHANDLE);
+	MEMTOOLS_API HANDLE mGetHandle(const std::wstring &PROCESSNAME, const ProcessAccess DESIREDACCESS);
+	MEMTOOLS_API DWORD mGetPID(const std::wstring &PROCESSNAME);
+	MEMTOOLS_API bool mIsHandleValid(const HANDLE &PROCESSHANDLE);
 }
