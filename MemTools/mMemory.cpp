@@ -4,7 +4,8 @@
 #include <exception>
 #include <string>
 
-struct mMemoryOperationException : public std::exception {
+
+__declspec(dllexport) struct mMemoryOperationException : public std::exception {
 	const char * what() const throw () {
 		DWORD lastError = GetLastError();
 		std::string errorCodeStr = std::to_string(lastError);
@@ -15,7 +16,7 @@ struct mMemoryOperationException : public std::exception {
 };
 
 
-LPCVOID mReadMemory(const HANDLE PROCESS_HANDLE, const LPCVOID READ_LOCATION) {
+__declspec(dllexport) LPCVOID mReadMemory(const HANDLE PROCESS_HANDLE, const LPCVOID READ_LOCATION) {
 	LPCVOID readValue = NULL;
 	bool readSuccess = ReadProcessMemory(PROCESS_HANDLE, READ_LOCATION, &readValue, sizeof(readValue), NULL);
 
@@ -26,7 +27,7 @@ LPCVOID mReadMemory(const HANDLE PROCESS_HANDLE, const LPCVOID READ_LOCATION) {
 	return readValue;
 }
 
-void mWriteMemory(const HANDLE PROCESS_HANDLE, const LPVOID WRITE_LOCATION, const LPCVOID DATA_TO_WRITE) {
+__declspec(dllexport) void mWriteMemory(const HANDLE PROCESS_HANDLE, const LPVOID WRITE_LOCATION, const LPCVOID DATA_TO_WRITE) {
 	bool writeSuccess = WriteProcessMemory(PROCESS_HANDLE, WRITE_LOCATION, DATA_TO_WRITE, sizeof(DATA_TO_WRITE), 0);
 
 	if (!writeSuccess) {
@@ -34,6 +35,6 @@ void mWriteMemory(const HANDLE PROCESS_HANDLE, const LPVOID WRITE_LOCATION, cons
 	}
 }
 
-void mInjectDLL(const HANDLE PROCESS_HANDLE, const std::string *DLL_LOCATION) {
+__declspec(dllexport) void mInjectDLL(const HANDLE PROCESS_HANDLE, const std::string *DLL_LOCATION) {
 
 }

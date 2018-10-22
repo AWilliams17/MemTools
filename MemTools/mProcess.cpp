@@ -3,18 +3,18 @@
 #include "mProcess.h"
 
 
-bool mIsProcessRunning(const std::string PROCESSNAME) {
+__declspec(dllexport) bool mIsProcessRunning(const std::string PROCESSNAME) {
 
 }
 
-HANDLE mGetHandle(const std::string PROCESSNAME, const ProcessAccess DESIREDACCESS) {
+__declspec(dllexport) HANDLE mGetHandle(const std::string PROCESSNAME, const ProcessAccess DESIREDACCESS) {
 
 }
 
-int mGetPID(const std::string PROCESSNAME) {
+__declspec(dllexport) int mGetPID(const std::string PROCESSNAME) {
 
 }
 
-bool mIsHandleValid(const HANDLE *PROCESSHANDLE) {
+__declspec(dllexport) bool mIsHandleValid(const HANDLE *PROCESSHANDLE) {
 
 }
