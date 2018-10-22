@@ -2,8 +2,6 @@
 #include "stdafx.h"
 #include <windows.h> 
 #include <exception>
-#include <cstring>
-#include <iostream>
 #include <string>
 
 struct mMemoryOperationException : public std::exception {
@@ -17,9 +15,9 @@ struct mMemoryOperationException : public std::exception {
 };
 
 
-LPCVOID mReadMemory(HANDLE ProcessHandle, LPCVOID ReadLocation) {
+LPCVOID mReadMemory(const HANDLE PROCESS_HANDLE, const LPCVOID READ_LOCATION) {
 	LPCVOID readValue = NULL;
-	bool readSuccess = ReadProcessMemory(ProcessHandle, ReadLocation, &readValue, sizeof(readValue), NULL);
+	bool readSuccess = ReadProcessMemory(PROCESS_HANDLE, READ_LOCATION, &readValue, sizeof(readValue), NULL);
 
 	if (!readSuccess) {
 		throw mMemoryOperationException();
@@ -28,10 +26,14 @@ LPCVOID mReadMemory(HANDLE ProcessHandle, LPCVOID ReadLocation) {
 	return readValue;
 }
 
-void mWriteMemory(HANDLE ProcessHandle, LPVOID WriteLocation, LPCVOID DataToWrite) {
-	bool writeSuccess = WriteProcessMemory(ProcessHandle, WriteLocation, DataToWrite, sizeof(DataToWrite), 0);
+void mWriteMemory(const HANDLE PROCESS_HANDLE, const LPVOID WRITE_LOCATION, const LPCVOID DATA_TO_WRITE) {
+	bool writeSuccess = WriteProcessMemory(PROCESS_HANDLE, WRITE_LOCATION, DATA_TO_WRITE, sizeof(DATA_TO_WRITE), 0);
 
 	if (!writeSuccess) {
 		throw mMemoryOperationException();
 	}
+}
+
+void mInjectDLL(const HANDLE PROCESS_HANDLE, const std::string *DLL_LOCATION) {
+
 }
