@@ -1,20 +1,35 @@
 #include <string>
 #include "stdafx.h"
 #include "mProcess.h"
+#include <Tlhelp32.h>
 
+__declspec(dllexport) HANDLE mGetHandle(const std::wstring &PROCESSNAME, const ProcessAccess DESIREDACCESS) {
+	DWORD pID = mGetPID(PROCESSNAME);
+	HANDLE processHandle = OpenProcess(DESIREDACCESS, FALSE, pID);
 
-__declspec(dllexport) bool mIsProcessRunning(const std::string PROCESSNAME) {
+	if (!mIsHandleValid(processHandle)) {
+		return NULL;
+	}
 
+	return processHandle;
 }
 
-__declspec(dllexport) HANDLE mGetHandle(const std::string PROCESSNAME, const ProcessAccess DESIREDACCESS) {
+__declspec(dllexport) DWORD mGetPID(const std::wstring &PROCESSNAME) {
+	PROCESSENTRY32 procEntry;
+	procEntry.dwSize = sizeof(procEntry);
+	HANDLE tool32SnapShot = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
 
+	if (Process32First(tool32SnapShot, &procEntry)) {
+		while (Process32Next(tool32SnapShot, &procEntry)) {
+			if (lstrcmpi(PROCESSNAME.c_str(), procEntry.szExeFile) == 0) {
+				return procEntry.th32ProcessID;
+			}
+		}
+	}
+
+	return NULL;
 }
 
-__declspec(dllexport) int mGetPID(const std::string PROCESSNAME) {
-
-}
-
-__declspec(dllexport) bool mIsHandleValid(const HANDLE *PROCESSHANDLE) {
-
+__declspec(dllexport) bool mIsHandleValid(const HANDLE &PROCESSHANDLE) {
+	return (PROCESSHANDLE != NULL && PROCESSHANDLE != INVALID_HANDLE_VALUE);
 }

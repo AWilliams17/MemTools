@@ -16,7 +16,7 @@ __declspec(dllexport) struct mMemoryOperationException : public std::exception {
 };
 
 
-__declspec(dllexport) LPCVOID mReadMemory(const HANDLE PROCESS_HANDLE, const LPCVOID READ_LOCATION) {
+__declspec(dllexport) LPCVOID mReadMemory(const HANDLE &PROCESS_HANDLE, const LPCVOID &READ_LOCATION) {
 	LPCVOID readValue = NULL;
 	bool readSuccess = ReadProcessMemory(PROCESS_HANDLE, READ_LOCATION, &readValue, sizeof(readValue), NULL);
 
@@ -27,7 +27,7 @@ __declspec(dllexport) LPCVOID mReadMemory(const HANDLE PROCESS_HANDLE, const LPC
 	return readValue;
 }
 
-__declspec(dllexport) void mWriteMemory(const HANDLE PROCESS_HANDLE, const LPVOID WRITE_LOCATION, const LPCVOID DATA_TO_WRITE) {
+__declspec(dllexport) void mWriteMemory(const HANDLE &PROCESS_HANDLE, const LPVOID &WRITE_LOCATION, const LPCVOID &DATA_TO_WRITE) {
 	bool writeSuccess = WriteProcessMemory(PROCESS_HANDLE, WRITE_LOCATION, DATA_TO_WRITE, sizeof(DATA_TO_WRITE), 0);
 
 	if (!writeSuccess) {
@@ -35,8 +35,8 @@ __declspec(dllexport) void mWriteMemory(const HANDLE PROCESS_HANDLE, const LPVOI
 	}
 }
 
-__declspec(dllexport) void mInjectDLL(const int PROCESS_ID, const std::string *DLL_LOCATION) {
-	size_t dllLen = strlen((DLL_LOCATION->c_str()));
+__declspec(dllexport) void mInjectDLL(const int &PROCESS_ID, const std::string &DLL_LOCATION) {
+	size_t dllLen = strlen(DLL_LOCATION.c_str());
 
 	HANDLE injecteeHandle = OpenProcess(PROCESS_CREATE_THREAD | PROCESS_QUERY_INFORMATION | PROCESS_VM_OPERATION
 										| PROCESS_VM_WRITE | PROCESS_VM_READ, FALSE, PROCESS_ID);
@@ -51,5 +51,4 @@ __declspec(dllexport) void mInjectDLL(const int PROCESS_ID, const std::string *D
 	mWriteMemory(injecteeHandle, locationToWrite, DLL_LOCATION);
 
 	HANDLE remoteThread = CreateRemoteThread(injecteeHandle, NULL, 0, (LPTHREAD_START_ROUTINE)loadLibrary, locationToWrite, 0, NULL);
-
 }

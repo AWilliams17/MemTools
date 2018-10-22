@@ -6,3 +6,7 @@ enum __declspec(dllexport) ProcessAccess : DWORD {
 	WriteOnly = PROCESS_VM_OPERATION | PROCESS_VM_WRITE,
 	ReadWrite = ReadOnly | WriteOnly
 };
+
+HANDLE mGetHandle(const std::wstring &PROCESSNAME, const ProcessAccess DESIREDACCESS);
+DWORD mGetPID(const std::wstring &PROCESSNAME);
+bool mIsHandleValid(const HANDLE &PROCESSHANDLE);
