@@ -5,7 +5,6 @@ All of the functions are made to be stateless and functional.
   
 # The Library
 ```c 
-Use the ProcessAccess for Write/Read Memory functions.
 // -Functions List-
 // Note: Use GetLastError() for more information on failures.
 // Note: All functions relating to handles other than mIsHandleValid and mGetHandle close their handles after usage.
@@ -29,7 +28,7 @@ bool mValidateHandle(HANDLE &ProcessHandle);
 //			-Enums-
 // Makes specifying access rights for an operation easier. 
 // See https://docs.microsoft.com/en-us/windows/desktop/procthread/process-security-and-access-rights
-mProcessFunctions::ProcessAccess : DWORD {
+enum mProcessFunctions::ProcessAccess : DWORD {
 	Full = PROCESS_ALL_ACCESS,
 	ReadOnly = PROCESS_VM_OPERATION | PROCESS_VM_READ,
 	WriteOnly = PROCESS_VM_OPERATION | PROCESS_VM_WRITE,
