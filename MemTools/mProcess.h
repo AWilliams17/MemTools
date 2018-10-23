@@ -23,6 +23,6 @@ namespace mProcessFunctions {
 	MEMTOOLS_API DWORD mGetPID(const std::string &PROCESSNAME);
 	// If the handle passed is not valid, the handle is CLOSED and false is returned. Otherwise, the handle is unaffected and true is returned.
 	MEMTOOLS_API bool mValidateHandle(HANDLE &ProcessHandle);
-
+	// Attempts to get the address of a loaded module in a process. Returns the address on success, NULL otherwise.
 	MEMTOOLS_API DWORD mGetModuleAddress(const std::string &PROCESS_NAME, const std::string &MODULE_NAME);
 }
