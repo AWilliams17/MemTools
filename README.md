@@ -1,4 +1,4 @@
-# MemTools - A Memory Hacking Library written in C  
+# MemTools - A Memory Hacking Library written in C++  
 This is an effort to write an easy to use library for performing common memory-related operations when writing game hacks.
 
 # The Library
