@@ -3,53 +3,63 @@
 #include <exception>
 #include <string>
 #include "mMemory.h"
+#include "mProcess.h"
 
 namespace mMemoryFunctions {
-	struct mMemoryOperationException : public std::exception {
-		const char * what() const throw () {
-			DWORD lastError = GetLastError();
-			std::string errorCodeStr = std::to_string(lastError);
-			std::string errorMessage = "Memory Operation failed with Error Code: " + errorCodeStr;
+	LPCVOID mReadMemory(const std::wstring &PROCESS_NAME, const LPCVOID &READ_LOCATION, const size_t &READ_SIZE) {
+		LPCVOID readValue;
 
-			return errorMessage.c_str();
+		HANDLE processHandle = mProcessFunctions::mGetHandle(PROCESS_NAME, mProcessFunctions::ProcessAccess::ReadOnly);
+
+		if (!mProcessFunctions::mIsHandleValid(processHandle)) {
+			return NULL;
 		}
-	};
 
-
-	LPCVOID mReadMemory(const HANDLE &PROCESS_HANDLE, const LPCVOID &READ_LOCATION) {
-		LPCVOID readValue = NULL;
-		bool readSuccess = ReadProcessMemory(PROCESS_HANDLE, READ_LOCATION, &readValue, sizeof(readValue), NULL);
-
-		if (!readSuccess) {
-			throw mMemoryOperationException();
+		if (!ReadProcessMemory(processHandle, READ_LOCATION, &readValue, READ_SIZE, NULL)) {
+			return NULL;
 		}
 
 		return readValue;
 	}
 
-	void mWriteMemory(const HANDLE &PROCESS_HANDLE, const LPVOID &WRITE_LOCATION, const LPCVOID &DATA_TO_WRITE) {
-		bool writeSuccess = WriteProcessMemory(PROCESS_HANDLE, WRITE_LOCATION, DATA_TO_WRITE, sizeof(DATA_TO_WRITE), 0);
+	bool mWriteMemory(const std::wstring &PROCESS_NAME, const LPVOID &WRITE_LOCATION, const LPCVOID &DATA_TO_WRITE, const size_t &DATA_SIZE) {
+		HANDLE processHandle = mProcessFunctions::mGetHandle(PROCESS_NAME, mProcessFunctions::ProcessAccess::ReadWrite);
 
-		if (!writeSuccess) {
-			throw mMemoryOperationException();
+		if (!mProcessFunctions::mIsHandleValid(processHandle)) {
+			return false;
 		}
+
+		return WriteProcessMemory(processHandle, WRITE_LOCATION, DATA_TO_WRITE, DATA_SIZE, 0);
 	}
 
-	void mInjectDLL(const int &PROCESS_ID, const std::string &DLL_LOCATION) {
+	bool mInjectDLL(const std::wstring &PROCESS_NAME, const std::string &DLL_LOCATION) {
 		size_t dllLen = DLL_LOCATION.length();
+		int procID = mProcessFunctions::mGetPID(PROCESS_NAME);
 
 		HANDLE injecteeHandle = OpenProcess(PROCESS_CREATE_THREAD | PROCESS_QUERY_INFORMATION | PROCESS_VM_OPERATION
-											| PROCESS_VM_WRITE | PROCESS_VM_READ, FALSE, PROCESS_ID);
+											| PROCESS_VM_WRITE | PROCESS_VM_READ, FALSE, procID);
+
+		if (!mProcessFunctions::mIsHandleValid(injecteeHandle)) {
+			return false;
+		}
+
 		LPVOID loadLibrary = (LPVOID)GetProcAddress(GetModuleHandle(L"kernel32.dll"), "LoadLibraryA");
 		LPVOID locationToWrite = (LPVOID)VirtualAllocEx(injecteeHandle, NULL, dllLen, MEM_RESERVE | MEM_COMMIT, PAGE_READWRITE);
 
-		if (injecteeHandle == INVALID_HANDLE_VALUE) {
-			CloseHandle(injecteeHandle);
-			throw mMemoryOperationException();
+		if (locationToWrite == NULL) {
+			return false;
 		}
 
-		mWriteMemory(injecteeHandle, locationToWrite, DLL_LOCATION.c_str());
+		if (!WriteProcessMemory(injecteeHandle, locationToWrite, DLL_LOCATION.c_str(), dllLen, 0)) {
+			return false;
+		}
 
 		HANDLE remoteThread = CreateRemoteThread(injecteeHandle, NULL, 0, (LPTHREAD_START_ROUTINE)loadLibrary, locationToWrite, 0, NULL);
+
+		if (!mProcessFunctions::mIsHandleValid(remoteThread)) {
+			return false;
+		}
+
+		return true;
 	}
 }

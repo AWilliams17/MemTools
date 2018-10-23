@@ -20,6 +20,10 @@ namespace mProcessFunctions {
 		procEntry.dwSize = sizeof(procEntry);
 		HANDLE tool32SnapShot = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
 
+		if (!mProcessFunctions::mIsHandleValid(tool32SnapShot)) {
+			return NULL;
+		}
+
 		if (Process32First(tool32SnapShot, &procEntry)) {
 			while (Process32Next(tool32SnapShot, &procEntry)) {
 				if (lstrcmpi(PROCESSNAME.c_str(), procEntry.szExeFile) == 0) {
