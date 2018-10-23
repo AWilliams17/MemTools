@@ -17,5 +17,5 @@ namespace mProcessFunctions {
 
 	MEMTOOLS_API HANDLE mGetHandle(const std::wstring &PROCESSNAME, const ProcessAccess DESIREDACCESS);
 	MEMTOOLS_API DWORD mGetPID(const std::wstring &PROCESSNAME);
-	MEMTOOLS_API bool mIsHandleValid(const HANDLE &PROCESSHANDLE);
+	MEMTOOLS_API bool mValidateHandle(HANDLE &ProcessHandle);
 }

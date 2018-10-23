@@ -11,7 +11,7 @@ namespace mMemoryFunctions {
 
 		HANDLE processHandle = mProcessFunctions::mGetHandle(PROCESS_NAME, mProcessFunctions::ProcessAccess::ReadOnly);
 
-		if (!mProcessFunctions::mIsHandleValid(processHandle)) {
+		if (!mProcessFunctions::mValidateHandle(processHandle)) {
 			return NULL;
 		}
 
@@ -19,16 +19,18 @@ namespace mMemoryFunctions {
 			return NULL;
 		}
 
+		CloseHandle(processHandle);
 		return readValue;
 	}
 
 	bool mWriteMemory(const std::wstring &PROCESS_NAME, const LPVOID &WRITE_LOCATION, const LPCVOID &DATA_TO_WRITE, const size_t &DATA_SIZE) {
 		HANDLE processHandle = mProcessFunctions::mGetHandle(PROCESS_NAME, mProcessFunctions::ProcessAccess::ReadWrite);
 
-		if (!mProcessFunctions::mIsHandleValid(processHandle)) {
+		if (!mProcessFunctions::mValidateHandle(processHandle)) {
 			return false;
 		}
 
+		CloseHandle(processHandle);
 		return WriteProcessMemory(processHandle, WRITE_LOCATION, DATA_TO_WRITE, DATA_SIZE, 0);
 	}
 
@@ -39,7 +41,7 @@ namespace mMemoryFunctions {
 		HANDLE injecteeHandle = OpenProcess(PROCESS_CREATE_THREAD | PROCESS_QUERY_INFORMATION | PROCESS_VM_OPERATION
 											| PROCESS_VM_WRITE | PROCESS_VM_READ, FALSE, procID);
 
-		if (!mProcessFunctions::mIsHandleValid(injecteeHandle)) {
+		if (!mProcessFunctions::mValidateHandle(injecteeHandle)) {
 			return false;
 		}
 
@@ -56,10 +58,12 @@ namespace mMemoryFunctions {
 
 		HANDLE remoteThread = CreateRemoteThread(injecteeHandle, NULL, 0, (LPTHREAD_START_ROUTINE)loadLibrary, locationToWrite, 0, NULL);
 
-		if (!mProcessFunctions::mIsHandleValid(remoteThread)) {
+		if (!mProcessFunctions::mValidateHandle(remoteThread)) {
 			return false;
 		}
 
+		CloseHandle(injecteeHandle);
+		CloseHandle(remoteThread);
 		return true;
 	}
 }

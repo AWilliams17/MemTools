@@ -8,24 +8,34 @@ All of the functions are made to be stateless and functional.
 Use the ProcessAccess for Write/Read Memory functions.
 // -Functions List-
 // Note: Use GetLastError() for more information on failures.
+// Note: All functions relating to handles other than mIsHandleValid and mGetHandle close their handles after usage.
 
-// Checks if the specified process is running. Returns true if it is, false otherwise.
-mIsProcessRunning(char* ProcessName)
-// Returns the handle to a process, or NULL if it failed.  
-mOpenHandle(const char* ProcessName, const ProcessAccess DesiredAccess)
-// Writes data to the target location in the process' memory. Returns NonZero if it is a success, 0 otherwise.
-mWriteMemory(handle ProcessHandle, LPVOID WriteLocation, LPCVOID Data)
-// Reads data from the specified address in the process' memory. Returns the read value on success, NULL otherwise.
-mReadMemory(handle ProcessHandle, LPCVOID ReadLocation)
-// Gets the PID of the specified process. Returns the PID on success, or NULL if it failed.
-mGetPID(const char* ProcessName)
-// Checks if the specified handle is still valid. Returns true if it is, false otherwise.
-mIsHandleValid(handle ProcessHandle)
-```  
-  
-# Usage  
-To be written...  
-  
+// 			-Functions inside the mMemoryFunctions namespace-
+// Returns the value read on success, NULL otherwise.
+LPCVOID mReadMemory(const std::wstring &PROCESS_NAME, const LPCVOID &READ_LOCATION, const size_t &READ_SIZE);
+// Returns true on a successful write, false otherwise.
+bool mWriteMemory(const std::wstring &PROCESS_NAME, const LPVOID &WRITE_LOCATION, const LPCVOID &DATA_TO_WRITE, const size_t &DATA_SIZE);
+// Returns true on a successful injection, false otherwise.
+bool mInjectDLL(const std::wstring &PROCESS_NAME, const std::string &DLL_LOCATION);
+
+//			-Functions inside the mProcessFunctions namespace-
+// Returns a handle to the specified process, NULL otherwise.
+HANDLE mGetHandle(const std::wstring &PROCESSNAME, const ProcessAccess DESIREDACCESS);
+// Returns the PID of the specified process, NULL otherwise.
+DWORD mGetPID(const std::wstring &PROCESSNAME);
+// If the handle passed is not valid, the handle is CLOSED and false is returned. Otherwise, the handle is unaffected and true is returned.
+bool mValidateHandle(HANDLE &ProcessHandle);
+
+//			-Enums-
+// Makes specifying access rights for an operation easier. 
+// See https://docs.microsoft.com/en-us/windows/desktop/procthread/process-security-and-access-rights
+mProcessFunctions::ProcessAccess : DWORD {
+	Full = PROCESS_ALL_ACCESS,
+	ReadOnly = PROCESS_VM_OPERATION | PROCESS_VM_READ,
+	WriteOnly = PROCESS_VM_OPERATION | PROCESS_VM_WRITE,
+	ReadWrite = ReadOnly | WriteOnly
+};
+```
 # License  
 This library is licensed under version 3 of the General Public License. You are free  
 to do whatever you wish the code in this library. No credit due.

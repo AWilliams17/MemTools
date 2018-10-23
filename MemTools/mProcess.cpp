@@ -8,7 +8,7 @@ namespace mProcessFunctions {
 		DWORD pID = mGetPID(PROCESSNAME);
 		HANDLE processHandle = OpenProcess(DESIREDACCESS, FALSE, pID);
 
-		if (!mIsHandleValid(processHandle)) {
+		if (!mValidateHandle(processHandle)) {
 			return NULL;
 		}
 
@@ -20,7 +20,7 @@ namespace mProcessFunctions {
 		procEntry.dwSize = sizeof(procEntry);
 		HANDLE tool32SnapShot = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
 
-		if (!mProcessFunctions::mIsHandleValid(tool32SnapShot)) {
+		if (!mValidateHandle(tool32SnapShot)) {
 			return NULL;
 		}
 
@@ -35,7 +35,12 @@ namespace mProcessFunctions {
 		return NULL;
 	}
 
-	bool mIsHandleValid(const HANDLE &PROCESSHANDLE) {
-		return (PROCESSHANDLE != NULL && PROCESSHANDLE != INVALID_HANDLE_VALUE);
+	bool mValidateHandle(HANDLE &ProcessHandle) {
+		if (ProcessHandle != NULL && ProcessHandle != INVALID_HANDLE_VALUE) {
+			CloseHandle(ProcessHandle);
+			return false;
+		}
+
+		return true;
 	}
 }
