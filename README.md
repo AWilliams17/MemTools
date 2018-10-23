@@ -34,5 +34,4 @@ enum mProcessFunctions::ProcessAccess : DWORD {
 };
 ```
 # License  
-This library is licensed under version 3 of the General Public License. You are free  
-to do whatever you wish the code in this library. No credit due.
+This library is licensed under version 3 of the General Public License. You are free to do whatever you wish the code in this library. No credit due.
