@@ -51,21 +51,19 @@ namespace mProcessFunctions {
 		DWORD cbNeeded;
 		DWORD targetModuleAddress = NULL;
 
-		if (targetProcessHandle == NULL) {
-			return NULL;
-		}
-
-		if (EnumProcessModules(targetProcessHandle, hMods, sizeof(hMods), &cbNeeded)) {
-			for (unsigned int i = 0; i < (cbNeeded / sizeof(HMODULE)); i++) {
-				char szModName[MAX_PATH];
-				if (GetModuleBaseNameA(targetProcessHandle, hMods[i], szModName, sizeof(szModName) / sizeof(TCHAR))) {
-					if (strcmp(szModName, MODULE_NAME.c_str()) == 0) {
-						targetModuleAddress = (DWORD)hMods[i];
-						break;
+		if (targetProcessHandle != NULL) {
+			if (EnumProcessModules(targetProcessHandle, hMods, sizeof(hMods), &cbNeeded)) {
+				for (unsigned int i = 0; i < (cbNeeded / sizeof(HMODULE)); i++) {
+					char szModName[MAX_PATH];
+					if (GetModuleBaseNameA(targetProcessHandle, hMods[i], szModName, sizeof(szModName) / sizeof(TCHAR))) {
+						if (strcmp(szModName, MODULE_NAME.c_str()) == 0) {
+							targetModuleAddress = (DWORD)hMods[i];
+							break;
+						}
 					}
 				}
+				CloseHandle(targetProcessHandle);
 			}
-			CloseHandle(targetProcessHandle);
 		}
 
 		return targetModuleAddress;
