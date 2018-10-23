@@ -6,6 +6,7 @@ This is an effort to write an easy to use library for performing common memory-r
 // -Functions List-
 // Note: Use GetLastError() for more information on failures.
 // Note: All functions relating to handles other than mIsHandleValid and mGetHandle close their handles after usage.
+// Note: There exists an overload accepting a handle instead of the process name for the ReadMemory, WriteMemory, and GetModuleAddress functions.
 
 // 			-Functions inside the mMemoryFunctions namespace-
 // Returns the value read on success, NULL otherwise.
