@@ -6,7 +6,7 @@
 #include "mProcess.h"
 
 namespace mMemoryFunctions {
-	LPCVOID mReadMemory(const std::wstring &PROCESS_NAME, const LPCVOID &READ_LOCATION, const size_t &READ_SIZE) {
+	LPCVOID mReadMemory(const std::wstring &PROCESS_NAME, const uintptr_t &READ_LOCATION, const size_t &READ_SIZE) {
 		LPCVOID readValue;
 
 		HANDLE processHandle = mProcessFunctions::mGetHandle(PROCESS_NAME, mProcessFunctions::ProcessAccess::ReadOnly);
@@ -15,7 +15,7 @@ namespace mMemoryFunctions {
 			return NULL;
 		}
 
-		if (!ReadProcessMemory(processHandle, READ_LOCATION, &readValue, READ_SIZE, NULL)) {
+		if (!ReadProcessMemory(processHandle, (LPCVOID)READ_LOCATION, &readValue, READ_SIZE, NULL)) {
 			return NULL;
 		}
 
@@ -23,15 +23,15 @@ namespace mMemoryFunctions {
 		return readValue;
 	}
 
-	bool mWriteMemory(const std::wstring &PROCESS_NAME, const LPVOID &WRITE_LOCATION, const LPCVOID &DATA_TO_WRITE, const size_t &DATA_SIZE) {
+	bool mWriteMemory(const std::wstring &PROCESS_NAME, const uintptr_t &WRITE_LOCATION, const LPCVOID &DATA_TO_WRITE, const size_t &DATA_SIZE) {
 		HANDLE processHandle = mProcessFunctions::mGetHandle(PROCESS_NAME, mProcessFunctions::ProcessAccess::ReadWrite);
 
 		if (!mProcessFunctions::mValidateHandle(processHandle)) {
 			return false;
 		}
 
+		bool writeSuccessful = WriteProcessMemory(processHandle, (LPVOID)WRITE_LOCATION, DATA_TO_WRITE, DATA_SIZE, 0);
 		CloseHandle(processHandle);
-		return WriteProcessMemory(processHandle, WRITE_LOCATION, DATA_TO_WRITE, DATA_SIZE, 0);
 	}
 
 	bool mInjectDLL(const std::wstring &PROCESS_NAME, const std::string &DLL_LOCATION) {
