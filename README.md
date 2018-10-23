@@ -33,5 +33,25 @@ enum mProcessFunctions::ProcessAccess : DWORD {
 	ReadWrite = ReadOnly | WriteOnly
 };
 ```
+
+# Example Usage: Changing Player Health in CSGO
+```c
+// Disclaimer for people who don't know what they're doing: Don't do this in a VAC server.
+// You will not be pleased with the aftermath.
+// Also the offset used here is not a static offset.
+
+DWORD csgoPID = mProcessFunctions::mGetPID(L"csgo.exe");
+
+uintptr_t healthAddress = 0x1E29B8FC;
+LPCVOID previousHealthValue = mMemoryFunctions::mReadMemory(L"csgo.exe", healthAddress, sizeof(healthAddress));
+int newHealth = 12345;
+mMemoryFunctions::mWriteMemory(L"csgo.exe", healthAddress, &newHealth, sizeof(newHealth));
+LPCVOID newHealthValue = mMemoryFunctions::mReadMemory(L"csgo.exe", healthAddress, sizeof(healthAddress));
+
+printf("csgo.exe PID: %d\n", csgoPID);
+printf("Health Value before write: %d\n", previousHealthValue); // 100
+printf("Health Value after write: %d\n", newHealthValue); // 12345
+```
+
 # License  
 This library is licensed under version 3 of the General Public License. You are free to do whatever you wish the code in this library. No credit due.
