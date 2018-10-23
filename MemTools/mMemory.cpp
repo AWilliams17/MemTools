@@ -6,7 +6,7 @@
 #include "mProcess.h"
 
 namespace mMemoryFunctions {
-	LPCVOID mReadMemory(const std::wstring &PROCESS_NAME, const uintptr_t &READ_LOCATION, const size_t &READ_SIZE) {
+	LPCVOID mReadMemory(const std::string &PROCESS_NAME, const uintptr_t &READ_LOCATION, const size_t &READ_SIZE) {
 		LPCVOID readValue;
 
 		HANDLE processHandle = mProcessFunctions::mGetHandle(PROCESS_NAME, mProcessFunctions::ProcessAccess::ReadOnly);
@@ -23,7 +23,7 @@ namespace mMemoryFunctions {
 		return readValue;
 	}
 
-	bool mWriteMemory(const std::wstring &PROCESS_NAME, const uintptr_t &WRITE_LOCATION, const LPCVOID &DATA_TO_WRITE, const size_t &DATA_SIZE) {
+	bool mWriteMemory(const std::string &PROCESS_NAME, const uintptr_t &WRITE_LOCATION, const LPCVOID &DATA_TO_WRITE, const size_t &DATA_SIZE) {
 		HANDLE processHandle = mProcessFunctions::mGetHandle(PROCESS_NAME, mProcessFunctions::ProcessAccess::ReadWrite);
 
 		if (!mProcessFunctions::mValidateHandle(processHandle)) {
@@ -32,9 +32,10 @@ namespace mMemoryFunctions {
 
 		bool writeSuccessful = WriteProcessMemory(processHandle, (LPVOID)WRITE_LOCATION, DATA_TO_WRITE, DATA_SIZE, 0);
 		CloseHandle(processHandle);
+		return writeSuccessful;
 	}
 
-	bool mInjectDLL(const std::wstring &PROCESS_NAME, const std::string &DLL_LOCATION) {
+	bool mInjectDLL(const std::string &PROCESS_NAME, const std::string &DLL_LOCATION) {
 		size_t dllLen = DLL_LOCATION.length();
 		int procID = mProcessFunctions::mGetPID(PROCESS_NAME);
 
@@ -45,7 +46,7 @@ namespace mMemoryFunctions {
 			return false;
 		}
 
-		LPVOID loadLibrary = (LPVOID)GetProcAddress(GetModuleHandle(L"kernel32.dll"), "LoadLibraryA");
+		LPVOID loadLibrary = (LPVOID)GetProcAddress(GetModuleHandle("kernel32.dll"), "LoadLibraryA");
 		LPVOID locationToWrite = (LPVOID)VirtualAllocEx(injecteeHandle, NULL, dllLen, MEM_RESERVE | MEM_COMMIT, PAGE_READWRITE);
 
 		if (locationToWrite == NULL) {
