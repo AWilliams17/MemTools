@@ -9,9 +9,9 @@ This is an effort to write an easy to use library for performing common memory-r
 
 // 			-Functions inside the mMemoryFunctions namespace-
 // Returns the value read on success, NULL otherwise.
-LPCVOID mReadMemory(const std::wstring &PROCESS_NAME, const LPCVOID &READ_LOCATION, const size_t &READ_SIZE);
+LPCVOID mReadMemory(const std::wstring &PROCESS_NAME, const uintptr_t &READ_LOCATION, const size_t &READ_SIZE);
 // Returns true on a successful write, false otherwise.
-bool mWriteMemory(const std::wstring &PROCESS_NAME, const LPVOID &WRITE_LOCATION, const LPCVOID &DATA_TO_WRITE, const size_t &DATA_SIZE);
+bool mWriteMemory(const std::wstring &PROCESS_NAME, const uintptr_t &WRITE_LOCATION, const LPCVOID &DATA_TO_WRITE, const size_t &DATA_SIZE);
 // Returns true on a successful injection, false otherwise.
 bool mInjectDLL(const std::wstring &PROCESS_NAME, const std::string &DLL_LOCATION);
 
