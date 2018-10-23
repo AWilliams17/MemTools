@@ -36,7 +36,7 @@ namespace mProcessFunctions {
 	}
 
 	bool mValidateHandle(HANDLE &ProcessHandle) {
-		if (ProcessHandle != NULL && ProcessHandle != INVALID_HANDLE_VALUE) {
+		if (ProcessHandle == NULL || ProcessHandle == INVALID_HANDLE_VALUE) {
 			CloseHandle(ProcessHandle);
 			return false;
 		}
