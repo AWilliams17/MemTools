@@ -8,7 +8,7 @@
 #endif
 
 namespace mProcessFunctions {
-	MEMTOOLS_API enum ProcessAccess : DWORD {
+	enum MEMTOOLS_API ProcessAccess : DWORD {
 		Full = PROCESS_ALL_ACCESS,
 		ReadOnly = PROCESS_VM_OPERATION | PROCESS_VM_READ,
 		WriteOnly = PROCESS_VM_OPERATION | PROCESS_VM_WRITE,

@@ -36,7 +36,7 @@ namespace mMemoryFunctions {
 	}
 
 	void mInjectDLL(const int &PROCESS_ID, const std::string &DLL_LOCATION) {
-		size_t dllLen = strlen(DLL_LOCATION.c_str());
+		size_t dllLen = DLL_LOCATION.length();
 
 		HANDLE injecteeHandle = OpenProcess(PROCESS_CREATE_THREAD | PROCESS_QUERY_INFORMATION | PROCESS_VM_OPERATION
 											| PROCESS_VM_WRITE | PROCESS_VM_READ, FALSE, PROCESS_ID);
@@ -45,7 +45,7 @@ namespace mMemoryFunctions {
 
 		if (injecteeHandle == INVALID_HANDLE_VALUE) {
 			CloseHandle(injecteeHandle);
-			return throw mMemoryOperationException();
+			throw mMemoryOperationException();
 		}
 
 		mWriteMemory(injecteeHandle, locationToWrite, DLL_LOCATION.c_str());
