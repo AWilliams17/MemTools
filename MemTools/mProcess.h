@@ -25,4 +25,6 @@ namespace mProcessFunctions {
 	MEMTOOLS_API bool mValidateHandle(HANDLE &ProcessHandle);
 	// Attempts to get the address of a loaded module in a process. Returns the address on success, NULL otherwise.
 	MEMTOOLS_API DWORD mGetModuleAddress(const std::string &PROCESS_NAME, const std::string &MODULE_NAME);
+	// Attempts to get the address of a loaded module in a process. Returns the address on success, NULL otherwise. Note: The handle is NOT closed.
+	MEMTOOLS_API DWORD mGetModuleAddress(const HANDLE &PROCESS_HANDLE, const std::string &MODULE_NAME);
 }

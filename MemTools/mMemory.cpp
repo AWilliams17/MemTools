@@ -23,6 +23,16 @@ namespace mMemoryFunctions {
 		return readValue;
 	}
 
+	LPCVOID mReadMemory(const HANDLE &PROCESS_HANDLE, const uintptr_t &READ_LOCATION, const size_t &READ_SIZE) {
+		LPCVOID readValue;
+
+		if (!ReadProcessMemory(PROCESS_HANDLE, (LPCVOID)READ_LOCATION, &readValue, READ_SIZE, NULL)) {
+			return NULL;
+		}
+
+		return readValue;
+	}
+
 	bool mWriteMemory(const std::string &PROCESS_NAME, const uintptr_t &WRITE_LOCATION, const LPCVOID &DATA_TO_WRITE, const size_t &DATA_SIZE) {
 		HANDLE processHandle = mProcessFunctions::mGetHandle(PROCESS_NAME, mProcessFunctions::ProcessAccess::ReadWrite);
 
@@ -32,6 +42,11 @@ namespace mMemoryFunctions {
 
 		bool writeSuccessful = WriteProcessMemory(processHandle, (LPVOID)WRITE_LOCATION, DATA_TO_WRITE, DATA_SIZE, 0);
 		CloseHandle(processHandle);
+		return writeSuccessful;
+	}
+
+	bool mWriteMemory(const HANDLE &PROCESS_HANDLE, const uintptr_t &WRITE_LOCATION, const LPCVOID &DATA_TO_WRITE, const size_t &DATA_SIZE) {
+		bool writeSuccessful = WriteProcessMemory(PROCESS_HANDLE, (LPVOID)WRITE_LOCATION, DATA_TO_WRITE, DATA_SIZE, 0);
 		return writeSuccessful;
 	}
 

@@ -68,4 +68,24 @@ namespace mProcessFunctions {
 
 		return targetModuleAddress;
 	}
+
+	DWORD mGetModuleAddress(const HANDLE &PROCESS_HANDLE, const std::string &MODULE_NAME) {
+		HMODULE hMods[1024];
+		DWORD cbNeeded;
+		DWORD targetModuleAddress = NULL;
+
+		if (EnumProcessModules(PROCESS_HANDLE, hMods, sizeof(hMods), &cbNeeded)) {
+			for (unsigned int i = 0; i < (cbNeeded / sizeof(HMODULE)); i++) {
+				char szModName[MAX_PATH];
+				if (GetModuleBaseNameA(PROCESS_HANDLE, hMods[i], szModName, sizeof(szModName) / sizeof(TCHAR))) {
+					if (strcmp(szModName, MODULE_NAME.c_str()) == 0) {
+						targetModuleAddress = (DWORD)hMods[i];
+						break;
+					}
+				}
+			}
+		}
+
+		return targetModuleAddress;
+	}
 }
