@@ -62,8 +62,8 @@ namespace mProcessFunctions {
 						}
 					}
 				}
-				CloseHandle(targetProcessHandle);
 			}
+			CloseHandle(targetProcessHandle);
 		}
 
 		return targetModuleAddress;
