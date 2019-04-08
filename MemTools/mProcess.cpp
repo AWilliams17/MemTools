@@ -45,7 +45,7 @@ namespace mProcessFunctions {
 		return true;
 	}
 
-	DWORD mGetModuleAddress(const std::string &PROCESS_NAME, const std::string &MODULE_NAME) {
+	uintptr_t mGetModuleAddress(const std::string &PROCESS_NAME, const std::string &MODULE_NAME) {
 		HANDLE targetProcessHandle = mGetHandle(PROCESS_NAME, ProcessAccess::QueryInformation);
 		HMODULE hMods[1024];
 		DWORD cbNeeded;
