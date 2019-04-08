@@ -97,13 +97,13 @@ namespace mProcessFunctions {
 		PIMAGE_EXPORT_DIRECTORY pExportsDirectory = (PIMAGE_EXPORT_DIRECTORY)((BYTE *)MODULE_HANDLE + pOptionalHeader->
 			DataDirectory[IMAGE_DIRECTORY_ENTRY_EXPORT].VirtualAddress);
 
-		DWORD* pNamesArray = (DWORD*)((BYTE*)MODULE_HANDLE + pExportsDirectory->AddressOfNames);
-		DWORD* pAddressArray = (DWORD*)((BYTE*)MODULE_HANDLE + pExportsDirectory->AddressOfFunctions);
+		DWORD* NamesArray = (DWORD*)((BYTE*)MODULE_HANDLE + pExportsDirectory->AddressOfNames);
+		DWORD* AddressArray = (DWORD*)((BYTE*)MODULE_HANDLE + pExportsDirectory->AddressOfFunctions);
 
 		for (DWORD i = 0; i < pExportsDirectory->NumberOfNames; i++) {
-			char* currName = (char*)MODULE_HANDLE + pAddressArray[i];
+			char* currName = (char*)MODULE_HANDLE + NamesArray[i];
 			if (strcmp(currName, TARGET_FUNCTION.c_str()) == 0) {
-				targetOffset = pAddressArray[i];
+				targetOffset = AddressArray[i];
 				break;
 			}
 		}
