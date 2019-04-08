@@ -88,4 +88,26 @@ namespace mProcessFunctions {
 
 		return targetModuleAddress;
 	}
+
+	DWORD mGetExportedFunctionOffset(const HMODULE &MODULE_HANDLE, const std::string TARGET_FUNCTION) {
+		DWORD targetOffset = NULL;
+		PIMAGE_DOS_HEADER pDosHeader = (PIMAGE_DOS_HEADER)((BYTE *)MODULE_HANDLE);
+		PIMAGE_NT_HEADERS pNTHeader = (PIMAGE_NT_HEADERS)((BYTE *)pDosHeader + pDosHeader->e_lfanew);
+		PIMAGE_OPTIONAL_HEADER pOptionalHeader = (PIMAGE_OPTIONAL_HEADER)(&pNTHeader->OptionalHeader);
+		PIMAGE_EXPORT_DIRECTORY pExportsDirectory = (PIMAGE_EXPORT_DIRECTORY)((BYTE *)MODULE_HANDLE + pOptionalHeader->
+			DataDirectory[IMAGE_DIRECTORY_ENTRY_EXPORT].VirtualAddress);
+
+		DWORD* pNamesArray = (DWORD*)((BYTE*)MODULE_HANDLE + pExportsDirectory->AddressOfNames);
+		DWORD* pAddressArray = (DWORD*)((BYTE*)MODULE_HANDLE + pExportsDirectory->AddressOfFunctions);
+
+		for (DWORD i = 0; i < pExportsDirectory->NumberOfNames; i++) {
+			char* currName = (char*)MODULE_HANDLE + pAddressArray[i];
+			if (strcmp(currName, TARGET_FUNCTION.c_str()) == 0) {
+				targetOffset = pAddressArray[i];
+				break;
+			}
+		}
+
+		return targetOffset;
+	}
 }

@@ -24,7 +24,9 @@ namespace mProcessFunctions {
 	// If the handle passed is not valid, the handle is CLOSED and false is returned. Otherwise, the handle is unaffected and true is returned.
 	MEMTOOLS_API bool mValidateHandle(HANDLE &ProcessHandle);
 	// Attempts to get the address of a loaded module in a process. Returns the address on success, NULL otherwise.
-	MEMTOOLS_API DWORD mGetModuleAddress(const std::string &PROCESS_NAME, const std::string &MODULE_NAME);
+	MEMTOOLS_API uintptr_t mGetModuleAddress(const std::string &PROCESS_NAME, const std::string &MODULE_NAME);
 	// Attempts to get the address of a loaded module in a process. Returns the address on success, NULL otherwise. Note: The handle is NOT closed.
-	MEMTOOLS_API DWORD mGetModuleAddress(const HANDLE &PROCESS_HANDLE, const std::string &MODULE_NAME);
+	MEMTOOLS_API uintptr_t mGetModuleAddress(const HANDLE &PROCESS_HANDLE, const std::string &MODULE_NAME);
+	// Attempts to get the offset of an exported function in a DLL. Returns the offset on success, NULL otherwise. NOTE: The handle is NOT closed.
+	MEMTOOLS_API DWORD mGetExportedFunctionOffset(const HMODULE &MODULE_HANDLE, const std::string TARGET_FUNCTION);
 }
