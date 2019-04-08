@@ -2,9 +2,9 @@
 #include <string>
 
 #ifdef MEMTOOLS_EXPORTS  
-#define MEMTOOLS_API __declspec(dllexport)   
+#define MEMTOOLS_API __declspec(dllexport)
 #else  
-#define MEMTOOLS_API __declspec(dllimport)   
+#define MEMTOOLS_API __declspec(dllimport)
 #endif
 
 namespace mMemoryFunctions {
