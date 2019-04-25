@@ -1,9 +1,9 @@
 #include "stdafx.h"
-#include <windows.h> 
-#include <exception>
-#include <string>
 #include "mMemory.h"
 #include "mProcess.h"
+#include <exception>
+#include <string>
+#include <windows.h> 
 
 namespace mMemoryFunctions {
 	LPCVOID mReadMemory(const std::string &PROCESS_NAME, const uintptr_t &READ_LOCATION, const size_t &READ_SIZE) {
@@ -62,7 +62,7 @@ namespace mMemoryFunctions {
 		}
 
 		LPVOID loadLibrary = (LPVOID)GetProcAddress(GetModuleHandle("kernel32.dll"), "LoadLibraryA");
-		LPVOID locationToWrite = (LPVOID)VirtualAllocEx(injecteeHandle, NULL, dllLen, MEM_RESERVE | MEM_COMMIT, PAGE_READWRITE);
+		LPVOID locationToWrite = VirtualAllocEx(injecteeHandle, NULL, dllLen, MEM_RESERVE | MEM_COMMIT, PAGE_READWRITE);
 
 		if (locationToWrite == NULL) {
 			return false;

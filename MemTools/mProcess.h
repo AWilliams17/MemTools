@@ -9,13 +9,19 @@
 
 namespace mProcessFunctions {
 	// See https://docs.microsoft.com/en-us/windows/desktop/procthread/process-security-and-access-rights
-	enum MEMTOOLS_API ProcessAccess : DWORD {
+	MEMTOOLS_API enum ProcessAccess : DWORD {
 		Full = PROCESS_ALL_ACCESS,
 		ReadOnly = PROCESS_VM_OPERATION | PROCESS_VM_READ,
 		WriteOnly = PROCESS_VM_OPERATION | PROCESS_VM_WRITE,
 		QueryInformation = PROCESS_QUERY_INFORMATION | PROCESS_VM_READ,
 		ReadWrite = ReadOnly | WriteOnly
 	};
+
+	MEMTOOLS_API typedef enum {
+		UNKNOWN,
+		PWIN32,
+		PWIN64
+	} ProcessBitness;
 
 	// Returns a handle to the specified process, NULL otherwise.
 	MEMTOOLS_API HANDLE mGetHandle(const std::string &PROCESSNAME, const ProcessAccess DESIREDACCESS);

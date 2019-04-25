@@ -1,8 +1,8 @@
-#include <string>
 #include "stdafx.h"
-#include <Tlhelp32.h>
-#include <psapi.h>
 #include "mProcess.h"
+#include <psapi.h>
+#include <Tlhelp32.h>
+#include <string>
 
 namespace mProcessFunctions {
 	HANDLE mGetHandle(const std::string &PROCESSNAME, const ProcessAccess DESIREDACCESS) {
@@ -109,5 +109,19 @@ namespace mProcessFunctions {
 		}
 
 		return targetOffset;
+	}
+
+	ProcessBitness mGetProcessBitness(const HMODULE &MODULE_HANDLE) {
+		ProcessBitness bitnessResult = UNKNOWN;
+		PIMAGE_DOS_HEADER pDosHeader = (PIMAGE_DOS_HEADER)((BYTE *)MODULE_HANDLE);
+		PIMAGE_NT_HEADERS pNTHeader = (PIMAGE_NT_HEADERS)((BYTE *)pDosHeader + pDosHeader->e_lfanew);
+
+		if (pNTHeader->FileHeader.Machine == IMAGE_FILE_32BIT_MACHINE) {
+			bitnessResult = PWIN32;
+		} else if (pNTHeader->FileHeader.Machine == IMAGE_FILE_MACHINE_IA64 || pNTHeader->FileHeader.Machine == IMAGE_FILE_MACHINE_AMD64) {
+			bitnessResult = PWIN64;
+		}
+
+		return bitnessResult;
 	}
 }
