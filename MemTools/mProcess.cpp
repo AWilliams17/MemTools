@@ -111,8 +111,8 @@ namespace mProcessFunctions {
 		return targetOffset;
 	}
 
-	ProcessBitness mGetProcessBitness(const HMODULE &MODULE_HANDLE) {
-		ProcessBitness bitnessResult = UNKNOWN;
+	Bitness mGetModuleBitness(const HMODULE &MODULE_HANDLE) {
+		Bitness bitnessResult = UNKNOWN;
 		PIMAGE_DOS_HEADER pDosHeader = (PIMAGE_DOS_HEADER)((BYTE *)MODULE_HANDLE);
 		PIMAGE_NT_HEADERS pNTHeader = (PIMAGE_NT_HEADERS)((BYTE *)pDosHeader + pDosHeader->e_lfanew);
 

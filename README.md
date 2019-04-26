@@ -25,8 +25,12 @@ DWORD mGetPID(const std::string &PROCESSNAME);
 bool mValidateHandle(HANDLE &ProcessHandle);
 // Attempts to get the address of a loaded module in a process. Returns the address on success, NULL otherwise.
 DWORD mGetModuleAddress(const std::string &PROCESS_NAME, const std::string &MODULE_NAME);
+// Attempts to get the offset of an exported function in a DLL. Returns the offset on success, NULL otherwise. NOTE: The handle is NOT closed.
+DWORD mGetExportedFunctionOffset(const HMODULE &MODULE_HANDLE, const std::string TARGET_FUNCTION);
+// Determines the bitness of a specified module. Returns UNKNOWN from the Bitness enum if it can't be determined.
+Bitness mGetModuleBitness(const HMODULE &MODULE_HANDLE);
 
-//			-Enums-
+//			-Enums/Typedefs-
 // Makes specifying access rights for an operation easier. 
 // See https://docs.microsoft.com/en-us/windows/desktop/procthread/process-security-and-access-rights
 enum mProcessFunctions::ProcessAccess : DWORD {
@@ -35,6 +39,13 @@ enum mProcessFunctions::ProcessAccess : DWORD {
 	WriteOnly = PROCESS_VM_OPERATION | PROCESS_VM_WRITE,
 	ReadWrite = ReadOnly | WriteOnly
 };
+// Also located inside the mProcessFunctions namespace: the Bitness typedef enum.
+// This is for usage with the 'mGetModuleBitness' function in the same namespace.
+typedef enum {
+		UNKNOWN,
+		PWIN32,
+		PWIN64
+	} Bitness;
 ```
 
 # Example Usage: Changing Player Health in CSGO
