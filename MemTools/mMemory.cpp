@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "mMemory.h"
 #include "mProcess.h"
-#include <exception>
 #include <string>
 #include <windows.h> 
 
@@ -48,6 +47,10 @@ namespace mMemoryFunctions {
 	bool mWriteMemory(const HANDLE &PROCESS_HANDLE, const uintptr_t &WRITE_LOCATION, const LPCVOID &DATA_TO_WRITE, const size_t &DATA_SIZE) {
 		bool writeSuccessful = WriteProcessMemory(PROCESS_HANDLE, (LPVOID)WRITE_LOCATION, DATA_TO_WRITE, DATA_SIZE, 0);
 		return writeSuccessful;
+	}
+
+	DWORD mGetPatternAddress(const char &PATTERN, const char &PATTERN_MASK, const HANDLE &PROCESS_HANDLE, const HMODULE MODULE_HANDLE) {
+
 	}
 
 	bool mInjectDLL(const std::string &PROCESS_NAME, const std::string &DLL_LOCATION) {
