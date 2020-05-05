@@ -1,8 +1,9 @@
 #include "stdafx.h"
+#include <Windows.h>
 #include "mMemory.h"
 #include "mProcess.h"
 #include <string>
-#include <windows.h> 
+#include <psapi.h>
 
 namespace mMemoryFunctions {
 	LPCVOID mReadMemory(const std::string &PROCESS_NAME, const uintptr_t &READ_LOCATION, const size_t &READ_SIZE) {
@@ -49,8 +50,50 @@ namespace mMemoryFunctions {
 		return writeSuccessful;
 	}
 
-	DWORD mGetPatternAddress(const char &PATTERN, const char &PATTERN_MASK, const HANDLE &PROCESS_HANDLE, const HMODULE MODULE_HANDLE) {
+	DWORD mGetPatternAddress(const char *PATTERN, const char *PATTERN_MASK, const HANDLE &PROCESS_HANDLE, const HMODULE MODULE_HANDLE) {
+		DWORD patternAddress = NULL;
 
+		MODULEINFO modInfo;
+		if (!GetModuleInformation(PROCESS_HANDLE, MODULE_HANDLE, &modInfo, sizeof(MODULEINFO))) {
+			return NULL;
+		}
+
+		DWORD baseAddress = (DWORD)modInfo.lpBaseOfDll;
+
+		BYTE *pPattern = (BYTE*)PATTERN;
+		int pattern_size = std::strlen(PATTERN_MASK);
+
+		BYTE *buffer = (BYTE*)malloc(modInfo.SizeOfImage);
+
+		if (!buffer) {
+			return NULL;
+		}
+
+		SIZE_T bytesread;
+		if (!ReadProcessMemory(PROCESS_HANDLE, (LPVOID)baseAddress, buffer, modInfo.SizeOfImage, &bytesread)) {
+			return NULL;
+		}
+
+		for (int i = 0; i < bytesread; i++) {
+			if (!patternAddress) {
+				for (int x = 0; x < pattern_size; x++) {
+					if (PATTERN_MASK[x] == '?') {
+						continue; // Wildcard; Ignore.
+					}
+
+					if (buffer[i + x] != pPattern[x]) {
+						break; // Pattern discrepancy; Break.
+					}
+
+					if (buffer[i + x] == pPattern[x] && x == pattern_size - 1) {
+						patternAddress = baseAddress + i; // Pattern matched.
+					}
+				}
+			} else break;
+		}
+
+		free(buffer);
+		return patternAddress;
 	}
 
 	bool mInjectDLL(const std::string &PROCESS_NAME, const std::string &DLL_LOCATION) {
