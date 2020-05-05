@@ -38,6 +38,12 @@ namespace mProcessFunctions {
 	// Attempts to get the address of a loaded module in a process. Returns the address on success, NULL otherwise. Note: The handle is NOT closed.
 	MEMTOOLS_API uintptr_t mGetModuleAddress(const HANDLE &PROCESS_HANDLE, const std::string &MODULE_NAME);
 
+	// Returns a handle to the specified module in the process, NULL otherwise.
+	MEMTOOLS_API HMODULE mGetModuleHandle(const std::string &PROCESS_NAME, const std::string &MODULE_NAME);
+
+	// Returns a handle to the specified module in the process, NULL otherwise.
+	MEMTOOLS_API HMODULE mGetModuleHandle(const HANDLE &PROCESS_HANDLE, const std::string &MODULE_NAME);
+
 	// Attempts to get the offset of an exported function in a DLL. Returns the offset on success, NULL otherwise. NOTE: The handle is NOT closed.
 	MEMTOOLS_API DWORD mGetExportedFunctionOffset(const HMODULE &MODULE_HANDLE, const std::string TARGET_FUNCTION);
 

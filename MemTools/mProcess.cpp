@@ -89,6 +89,51 @@ namespace mProcessFunctions {
 		return targetModuleAddress;
 	}
 
+	// TODO: Refactor the code duplication.
+	HMODULE mGetModuleHandle(const std::string &PROCESS_NAME, const std::string &MODULE_NAME) {
+		HMODULE hMods[1024];
+		DWORD cbNeeded;
+		HMODULE targetModuleHandle = NULL;
+
+		HANDLE targetProcessHandle = mGetHandle(PROCESS_NAME, ProcessAccess::QueryInformation);
+		if (targetProcessHandle != NULL) {
+			if (EnumProcessModules(targetProcessHandle, hMods, sizeof(hMods), &cbNeeded)) {
+				for (unsigned int i = 0; i < (cbNeeded / sizeof(HMODULE)); i++) {
+					char szModName[MAX_PATH];
+					if (GetModuleBaseNameA(targetProcessHandle, hMods[i], szModName, sizeof(szModName) / sizeof(TCHAR))) {
+						if (strcmp(szModName, MODULE_NAME.c_str()) == 0) {
+							targetModuleHandle = hMods[i];
+							break;
+						}
+					}
+				}
+			}
+			CloseHandle(targetProcessHandle);
+		}
+
+		return targetModuleHandle;
+	}
+
+	HMODULE mGetModuleHandle(const HANDLE &PROCESS_HANDLE, const std::string &MODULE_NAME) {
+		HMODULE hMods[1024];
+		DWORD cbNeeded;
+		HMODULE targetModuleHandle = NULL;
+
+		if (EnumProcessModules(PROCESS_HANDLE, hMods, sizeof(hMods), &cbNeeded)) {
+			for (unsigned int i = 0; i < (cbNeeded / sizeof(HMODULE)); i++) {
+				char szModName[MAX_PATH];
+				if (GetModuleBaseNameA(PROCESS_HANDLE, hMods[i], szModName, sizeof(szModName) / sizeof(TCHAR))) {
+					if (strcmp(szModName, MODULE_NAME.c_str()) == 0) {
+						targetModuleHandle = hMods[i];
+						break;
+					}
+				}
+			}
+		}
+
+		return targetModuleHandle;
+	}
+
 	DWORD mGetExportedFunctionOffset(const HMODULE &MODULE_HANDLE, const std::string TARGET_FUNCTION) {
 		DWORD targetOffset = NULL;
 		PIMAGE_DOS_HEADER pDosHeader = (PIMAGE_DOS_HEADER)((BYTE *)MODULE_HANDLE);
