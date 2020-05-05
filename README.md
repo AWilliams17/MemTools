@@ -5,18 +5,19 @@ This is an effort to write an easy to use library for performing common memory-r
 ```c 
 // -Functions List-
 // Note: Use GetLastError() for more information on failures.
-// Note: All functions relating to handles other than mIsHandleValid and mGetHandle close their handles after usage.
-// Note: There exists an overload accepting a handle instead of the process name for the ReadMemory, WriteMemory, and GetModuleAddress functions.
+// Note: For most functions there exists an overload accepting a handle instead of the process name.
 
-// 			-Functions inside the mMemoryFunctions namespace-
+// 			-Functions inside the mMemoryFunctions namespace(not including overloads)-
 // Returns the value read on success, NULL otherwise.
 LPCVOID mReadMemory(const std::string &PROCESS_NAME, const uintptr_t &READ_LOCATION, const size_t &READ_SIZE);
 // Returns true on a successful write, false otherwise.
 bool mWriteMemory(const std::string &PROCESS_NAME, const uintptr_t &WRITE_LOCATION, const LPCVOID &DATA_TO_WRITE, const size_t &DATA_SIZE);
 // Returns true on a successful injection, false otherwise.
 bool mInjectDLL(const std::string &PROCESS_NAME, const std::string &DLL_LOCATION);
+// Returns the address of the first occurrence of a pattern in the target process' memory. NOTE: The handles are NOT closed.
+DWORD mGetPatternAddress(const char *PATTERN, const char *PATTERN_MASK, const HANDLE &PROCESS_HANDLE, const HMODULE MODULE_HANDLE);
 
-//			-Functions inside the mProcessFunctions namespace-
+//			-Functions inside the mProcessFunctions namespace(not including overloads)-
 // Returns a handle to the specified process, NULL otherwise.
 HANDLE mGetHandle(const std::string &PROCESSNAME, const ProcessAccess DESIREDACCESS);
 // Returns the PID of the specified process, NULL otherwise.
@@ -25,6 +26,8 @@ DWORD mGetPID(const std::string &PROCESSNAME);
 bool mValidateHandle(HANDLE &ProcessHandle);
 // Attempts to get the address of a loaded module in a process. Returns the address on success, NULL otherwise.
 DWORD mGetModuleAddress(const std::string &PROCESS_NAME, const std::string &MODULE_NAME);
+// Returns a handle to the specified module in the process, NULL otherwise. Note: The handle is NOT closed.
+HMODULE mGetModuleHandle(const std::string &PROCESS_NAME, const std::string &MODULE_NAME);
 // Attempts to get the offset of an exported function in a DLL. Returns the offset on success, NULL otherwise. NOTE: The handle is NOT closed.
 DWORD mGetExportedFunctionOffset(const HMODULE &MODULE_HANDLE, const std::string TARGET_FUNCTION);
 // Determines the bitness of a specified module. Returns UNKNOWN from the Bitness enum if it can't be determined.
