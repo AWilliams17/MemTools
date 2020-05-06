@@ -46,23 +46,11 @@ namespace mProcessFunctions {
 	}
 
 	uintptr_t mGetModuleAddress(const std::string &PROCESS_NAME, const std::string &MODULE_NAME) {
-		HANDLE targetProcessHandle = mGetHandle(PROCESS_NAME, ProcessAccess::QueryInformation);
-		HMODULE hMods[1024];
-		DWORD cbNeeded;
 		uintptr_t targetModuleAddress = NULL;
 
+		HANDLE targetProcessHandle = mGetHandle(PROCESS_NAME, ProcessAccess::QueryInformation);
 		if (targetProcessHandle != NULL) {
-			if (EnumProcessModules(targetProcessHandle, hMods, sizeof(hMods), &cbNeeded)) {
-				for (unsigned int i = 0; i < (cbNeeded / sizeof(HMODULE)); i++) {
-					char szModName[MAX_PATH];
-					if (GetModuleBaseNameA(targetProcessHandle, hMods[i], szModName, sizeof(szModName) / sizeof(TCHAR))) {
-						if (strcmp(szModName, MODULE_NAME.c_str()) == 0) {
-							targetModuleAddress = (uintptr_t)hMods[i];
-							break;
-						}
-					}
-				}
-			}
+			targetModuleAddress = (uintptr_t)mGetModuleHandle(targetProcessHandle, MODULE_NAME);
 			CloseHandle(targetProcessHandle);
 		}
 
@@ -70,44 +58,16 @@ namespace mProcessFunctions {
 	}
 
 	uintptr_t mGetModuleAddress(const HANDLE &PROCESS_HANDLE, const std::string &MODULE_NAME) {
-		HMODULE hMods[1024];
-		DWORD cbNeeded;
-		uintptr_t targetModuleAddress = NULL;
-
-		if (EnumProcessModules(PROCESS_HANDLE, hMods, sizeof(hMods), &cbNeeded)) {
-			for (unsigned int i = 0; i < (cbNeeded / sizeof(HMODULE)); i++) {
-				char szModName[MAX_PATH];
-				if (GetModuleBaseNameA(PROCESS_HANDLE, hMods[i], szModName, sizeof(szModName) / sizeof(TCHAR))) {
-					if (strcmp(szModName, MODULE_NAME.c_str()) == 0) {
-						targetModuleAddress = (uintptr_t)hMods[i];
-						break;
-					}
-				}
-			}
-		}
-
+		uintptr_t targetModuleAddress = (uintptr_t)mGetModuleHandle(PROCESS_HANDLE, MODULE_NAME);
 		return targetModuleAddress;
 	}
 
-	// TODO: Refactor the code duplication.
 	HMODULE mGetModuleHandle(const std::string &PROCESS_NAME, const std::string &MODULE_NAME) {
-		HMODULE hMods[1024];
-		DWORD cbNeeded;
 		HMODULE targetModuleHandle = NULL;
 
 		HANDLE targetProcessHandle = mGetHandle(PROCESS_NAME, ProcessAccess::QueryInformation);
 		if (targetProcessHandle != NULL) {
-			if (EnumProcessModules(targetProcessHandle, hMods, sizeof(hMods), &cbNeeded)) {
-				for (unsigned int i = 0; i < (cbNeeded / sizeof(HMODULE)); i++) {
-					char szModName[MAX_PATH];
-					if (GetModuleBaseNameA(targetProcessHandle, hMods[i], szModName, sizeof(szModName) / sizeof(TCHAR))) {
-						if (strcmp(szModName, MODULE_NAME.c_str()) == 0) {
-							targetModuleHandle = hMods[i];
-							break;
-						}
-					}
-				}
-			}
+			targetModuleHandle = mGetModuleHandle(targetProcessHandle, MODULE_NAME);
 			CloseHandle(targetProcessHandle);
 		}
 
