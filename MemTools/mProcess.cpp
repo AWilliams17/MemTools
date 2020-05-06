@@ -5,9 +5,9 @@
 #include <string>
 
 namespace mProcessFunctions {
-	HANDLE mGetHandle(const std::string &PROCESSNAME, const ProcessAccess DESIREDACCESS) {
-		DWORD pID = mGetPID(PROCESSNAME);
-		HANDLE processHandle = OpenProcess(DESIREDACCESS, FALSE, pID);
+	HANDLE mGetHandle(const std::string &PROCESS_NAME, const ProcessAccess DESIRED_ACCESS) {
+		DWORD pID = mGetPID(PROCESS_NAME);
+		HANDLE processHandle = OpenProcess(DESIRED_ACCESS, FALSE, pID);
 
 		if (!mValidateHandle(processHandle)) {
 			return NULL;
@@ -16,7 +16,7 @@ namespace mProcessFunctions {
 		return processHandle;
 	}
 
-	DWORD mGetPID(const std::string &PROCESSNAME) {
+	DWORD mGetPID(const std::string &PROCESS_NAME) {
 		PROCESSENTRY32 procEntry;
 		procEntry.dwSize = sizeof(procEntry);
 		HANDLE tool32SnapShot = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
@@ -27,7 +27,7 @@ namespace mProcessFunctions {
 
 		if (Process32First(tool32SnapShot, &procEntry)) {
 			while (Process32Next(tool32SnapShot, &procEntry)) {
-				if (strcmp(PROCESSNAME.c_str(), procEntry.szExeFile) == 0) {
+				if (strcmp(PROCESS_NAME.c_str(), procEntry.szExeFile) == 0) {
 					return procEntry.th32ProcessID;
 				}
 			}
@@ -94,7 +94,7 @@ namespace mProcessFunctions {
 		return targetModuleHandle;
 	}
 
-	DWORD mGetExportedFunctionOffset(const HMODULE &MODULE_HANDLE, const std::string TARGET_FUNCTION) {
+	DWORD mGetExportedFunctionOffset(const HMODULE &MODULE_HANDLE, const std::string &TARGET_FUNCTION) {
 		DWORD targetOffset = NULL;
 		PIMAGE_DOS_HEADER pDosHeader = (PIMAGE_DOS_HEADER)((BYTE *)MODULE_HANDLE);
 		PIMAGE_NT_HEADERS pNTHeader = (PIMAGE_NT_HEADERS)((BYTE *)pDosHeader + pDosHeader->e_lfanew);

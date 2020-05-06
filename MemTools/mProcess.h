@@ -24,10 +24,10 @@ namespace mProcessFunctions {
 	} Bitness;
 
 	// Returns a handle to the specified process, NULL otherwise.
-	MEMTOOLS_API HANDLE mGetHandle(const std::string &PROCESSNAME, const ProcessAccess DESIREDACCESS);
+	MEMTOOLS_API HANDLE mGetHandle(const std::string &PROCESS_NAME, const ProcessAccess DESIRED_ACCESS);
 
 	// Returns the PID of the specified process, NULL otherwise.
-	MEMTOOLS_API DWORD mGetPID(const std::string &PROCESSNAME);
+	MEMTOOLS_API DWORD mGetPID(const std::string &PROCESS_NAME);
 
 	// If the handle passed is not valid, the handle is CLOSED and false is returned. Otherwise, the handle is unaffected and true is returned.
 	MEMTOOLS_API bool mValidateHandle(HANDLE &ProcessHandle);
@@ -45,7 +45,7 @@ namespace mProcessFunctions {
 	MEMTOOLS_API HMODULE mGetModuleHandle(const HANDLE &PROCESS_HANDLE, const std::string &MODULE_NAME);
 
 	// Attempts to get the offset of an exported function in a DLL. Returns the offset on success, NULL otherwise. NOTE: The handle is NOT closed.
-	MEMTOOLS_API DWORD mGetExportedFunctionOffset(const HMODULE &MODULE_HANDLE, const std::string TARGET_FUNCTION);
+	MEMTOOLS_API DWORD mGetExportedFunctionOffset(const HMODULE &MODULE_HANDLE, const std::string &TARGET_FUNCTION);
 
 	// Determines the bitness of a specified module. Returns UNKNOWN from the Bitness enum if it can't be determined.
 	MEMTOOLS_API Bitness mGetModuleBitness(const HMODULE &MODULE_HANDLE);
