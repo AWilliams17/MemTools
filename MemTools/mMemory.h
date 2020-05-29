@@ -1,5 +1,4 @@
 #pragma once
-#include <string>
 
 #ifdef MEMTOOLS_EXPORTS  
 #define MEMTOOLS_API __declspec(dllexport)

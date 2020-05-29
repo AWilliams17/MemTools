@@ -1,9 +1,6 @@
 #include "stdafx.h"
-#include <Windows.h>
 #include "mMemory.h"
 #include "mProcess.h"
-#include <string>
-#include <psapi.h>
 
 namespace mMemoryFunctions {
 	LPCVOID mReadMemory(const std::string &PROCESS_NAME, const uintptr_t &READ_LOCATION, const size_t &READ_SIZE) {

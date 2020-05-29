@@ -1,8 +1,6 @@
 #include "stdafx.h"
 #include "mProcess.h"
-#include <psapi.h>
 #include <Tlhelp32.h>
-#include <string>
 
 namespace mProcessFunctions {
 	HANDLE mGetHandle(const std::string &PROCESS_NAME, const ProcessAccess DESIRED_ACCESS) {
